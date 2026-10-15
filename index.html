@@ -691,6 +691,72 @@ section {
     align-self: flex-start;
 }
 
+.contact-form .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn .spinner {
+    display: none;
+
+    width: 15px;
+    height: 15px;
+
+    border: 2px solid rgba(6, 16, 29, 0.35);
+    border-top-color: #06101d;
+
+    border-radius: 50%;
+
+    animation: btn-spin 0.8s linear infinite;
+}
+
+.btn.loading .spinner {
+    display: inline-block;
+}
+
+.btn.loading .bi-send {
+    display: none;
+}
+
+@keyframes btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.form-status {
+    display: none;
+
+    padding: 13px 16px;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+.form-status.show {
+    display: block;
+}
+
+.form-status.loading {
+    color: var(--primary);
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.form-status.success {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.4);
+}
+
+.form-status.error {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.4);
+}
+
 
 /* ================= FOOTER ================= */
 
@@ -1321,7 +1387,7 @@ section {
 
                     <div>
                         <h4>Email</h4>
-                        <p>kanujkumar361@gmail.com</p>
+                        <p>anujkumardev14@gmail.com</p>
                     </div>
 
                 </div>
@@ -1353,13 +1419,37 @@ section {
             </div>
 
 
-            <form class="contact-form" id="contactForm">
+            <!--
+                Contact form powered by Web3Forms (free, no backend).
+                Activate it: https://web3forms.com -> get a free Access Key
+                by email, then replace YOUR_WEB3FORMS_ACCESS_KEY below.
+            -->
+            <form class="contact-form"
+                  id="contactForm"
+                  action="https://api.web3forms.com/submit"
+                  method="POST">
+
+                <input type="hidden"
+                       name="access_key"
+                       value="d9f833c2-0380-4e3a-8105-977e6a6e15f5">
+
+                <input type="hidden"
+                       name="from_name"
+                       value="Anuj Portfolio Website">
+
+                <!-- Spam honeypot - keep hidden, humans never see it -->
+                <input type="checkbox"
+                       name="botcheck"
+                       style="display: none;">
 
                 <div class="input-group">
 
                     <input type="text"
                            id="name"
+                           name="name"
+                           minlength="2"
                            aria-label="Your Name"
+                           autocomplete="name"
                            placeholder="Your Name"
                            required>
 
@@ -1370,7 +1460,9 @@ section {
 
                     <input type="email"
                            id="email"
+                           name="email"
                            aria-label="Your Email"
+                           autocomplete="email"
                            placeholder="Your Email"
                            required>
 
@@ -1381,6 +1473,7 @@ section {
 
                     <input type="text"
                            id="subject"
+                           name="subject"
                            aria-label="Subject"
                            placeholder="Subject"
                            required>
@@ -1391,7 +1484,9 @@ section {
                 <div class="input-group">
 
                     <textarea id="message"
+                              name="message"
                               rows="6"
+                              minlength="10"
                               aria-label="Your Message"
                               placeholder="Your Message"
                               required></textarea>
@@ -1399,10 +1494,16 @@ section {
                 </div>
 
 
-                <button type="submit" class="btn">
-                    Send Message
+                <button type="submit" class="btn" id="submitBtn">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span class="btn-label">Send Message</span>
                     <i class="bi bi-send"></i>
                 </button>
+
+                <div class="form-status"
+                     id="formStatus"
+                     role="status"
+                     aria-live="polite"></div>
 
             </form>
 

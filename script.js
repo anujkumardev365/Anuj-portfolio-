@@ -117,33 +117,109 @@ if (yearElement) {
 }
 
 
-/* ================= CONTACT FORM ================= */
+/* ================= CONTACT FORM (Web3Forms) ================= */
 
 const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
 
-    contactForm.addEventListener("submit", (e) => {
+    const submitBtn = document.getElementById("submitBtn");
+    const btnLabel = submitBtn ? submitBtn.querySelector(".btn-label") : null;
+    const formStatus = document.getElementById("formStatus");
+
+    const STATUS_MESSAGES = {
+        loading: "Sending...",
+        success: "Thank you! Your message has been sent.",
+        error: "Sorry! Your message could not be sent. Please try again."
+    };
+
+    /* Updates the status box and the submit button for each state */
+    function setFormState(state, text) {
+
+        if (formStatus) {
+            formStatus.textContent = text;
+            formStatus.className = "form-status show " + state;
+        }
+
+        const isLoading = state === "loading";
+
+        if (submitBtn) {
+            submitBtn.disabled = isLoading;
+            submitBtn.classList.toggle("loading", isLoading);
+        }
+
+        if (btnLabel) {
+            btnLabel.textContent = isLoading ? "Sending..." : "Send Message";
+        }
+    }
+
+    /* Hide stale success/error messages once the user edits the form */
+    contactForm.addEventListener("input", () => {
+
+        if (!formStatus) return;
+
+        if (formStatus.classList.contains("success") ||
+            formStatus.classList.contains("error")) {
+            formStatus.textContent = "";
+            formStatus.className = "form-status";
+        }
+    });
+
+    contactForm.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const subject = document.getElementById("subject").value.trim();
-        const message = document.getElementById("message").value.trim();
+        /* Client-side validation: required, type="email", minlength... */
+        if (!contactForm.checkValidity()) {
+            contactForm.reportValidity();
+            return;
+        }
 
-        const body =
-            "Name: " + name + "\n" +
-            "Email: " + email + "\n\n" +
-            message;
+        setFormState("loading", STATUS_MESSAGES.loading);
 
-        window.location.href =
-            "mailto:kanujkumar361@gmail.com" +
-            "?subject=" + encodeURIComponent(subject) +
-            "&body=" + encodeURIComponent(body);
+        try {
 
-        contactForm.reset();
+            /* Same request format as the official Web3Forms AJAX example:
+               JSON body + Accept: application/json guarantees a JSON response
+               (no 303 redirect, which is only for non-JS submissions).       */
+            const payload = Object.fromEntries(new FormData(contactForm));
 
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json().catch(() => null);
+
+            if (!response.ok || !data || !data.success) {
+
+                /* API puts errors in message or body.message depending on type */
+                const apiMessage = data
+                    ? data.message || (data.body && data.body.message)
+                    : null;
+
+                setFormState("error", apiMessage || STATUS_MESSAGES.error);
+                return;
+            }
+
+            contactForm.reset();
+            setFormState("success", STATUS_MESSAGES.success);
+
+        } catch (error) {
+
+            /* Network failure, offline, blocked request... */
+            setFormState("error", STATUS_MESSAGES.error);
+
+        } finally {
+
+            if (submitBtn) submitBtn.disabled = false;
+            if (submitBtn) submitBtn.classList.remove("loading");
+            if (btnLabel) btnLabel.textContent = "Send Message";
+        }
     });
 
 }
