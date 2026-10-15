@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="description"
+          content="Portfolio of Anuj Kumar, a BCA student and aspiring software developer from Noida, India. View my skills, education and projects.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Anuj Kumar | Portfolio">
+    <meta property="og:description"
+          content="BCA student and aspiring software developer from Noida, India.">
+    <meta name="theme-color" content="#08111f">
+
     <title>Anuj Kumar | Portfolio</title>
 <style>/* ================= GENERAL ================= */
 
@@ -844,6 +853,21 @@ section {
         height: 230px;
     }
 
+}
+
+
+/* ================= REDUCED MOTION ================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    * {
+        scroll-behavior: auto;
+    }
+
+    .profile-circle {
+        animation: none;
+    }
+
 }</style>
     
     <!-- Google Font -->
@@ -855,8 +879,6 @@ section {
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -877,7 +899,10 @@ section {
             <a href="#contact">Contact</a>
         </nav>
 
-        <button class="menu-btn" id="menuBtn">
+        <button class="menu-btn" id="menuBtn"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="navbar">
             <i class="bi bi-list"></i>
         </button>
 
@@ -1334,6 +1359,7 @@ section {
 
                     <input type="text"
                            id="name"
+                           aria-label="Your Name"
                            placeholder="Your Name"
                            required>
 
@@ -1344,6 +1370,7 @@ section {
 
                     <input type="email"
                            id="email"
+                           aria-label="Your Email"
                            placeholder="Your Email"
                            required>
 
@@ -1354,6 +1381,7 @@ section {
 
                     <input type="text"
                            id="subject"
+                           aria-label="Subject"
                            placeholder="Subject"
                            required>
 
@@ -1364,6 +1392,7 @@ section {
 
                     <textarea id="message"
                               rows="6"
+                              aria-label="Your Message"
                               placeholder="Your Message"
                               required></textarea>
 
@@ -1434,4 +1463,3 @@ section {
 
 </body>
 </html>
-<script></script>
